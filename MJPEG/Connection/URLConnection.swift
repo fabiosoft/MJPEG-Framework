@@ -21,6 +21,6 @@ public protocol URLConnectionDelegate {
     /**
         Caled in URLConnectionDataDelegate
     */
-    func responseDidFinisch(#data: NSData)
+    func responseDidFinish(data: Data)
     
 }

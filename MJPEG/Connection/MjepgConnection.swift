@@ -15,7 +15,7 @@ public class MJPEGConnection {
     
     private var connection: URLConnection
     private var connectionData: ConnectionData
-    private var request: NSURLRequest
+    private var request: URLRequest
     private var connectionDataDelegate: URLConnectionDataDelegate
     private var connectionDelegate: URLConnectionDelegate
     private var isConnectionSetup = false
@@ -25,7 +25,7 @@ public class MJPEGConnection {
         self.connectionData = connectionData
         self.connectionDelegate = delegate
         
-        self.request = NSURLRequest(URL: connectionData.URL)
+        self.request = URLRequest(url: connectionData.URL as URL)
         self.connectionDataDelegate = URLConnectionDataDelegate(connectionData: connectionData)
         self.connection = URLConnection()
     }
@@ -42,7 +42,7 @@ public class MJPEGConnection {
             
             isConnectionSetup = true
         } else {
-            println("cant create connection")
+            print("cant create connection")
         }
     }
     

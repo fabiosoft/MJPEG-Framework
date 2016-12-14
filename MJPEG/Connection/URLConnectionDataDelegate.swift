@@ -16,7 +16,7 @@ public class URLConnectionDataDelegate: NSObject, NSURLConnectionDataDelegate {
     weak var connection: URLConnection?
     
     private var connectionData: ConnectionData
-    private var data = NSMutableData()
+    private var data = Data()
     
     
     public init(connectionData: ConnectionData) {
@@ -27,19 +27,19 @@ public class URLConnectionDataDelegate: NSObject, NSURLConnectionDataDelegate {
     // MARK: - NSURLConnectionDelegate
     // ServerTrust and HTTPBasic
     
-    public func connection(connection: NSURLConnection, willSendRequestForAuthenticationChallenge challenge: NSURLAuthenticationChallenge) {
+    public func connection(_ connection: NSURLConnection, willSendRequestFor challenge: URLAuthenticationChallenge) {
         
         // NSURLAuthenticationMethod - ServerTrust
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
-            let credential = NSURLCredential(forTrust: challenge.protectionSpace.serverTrust)
-            challenge.sender.useCredential(credential , forAuthenticationChallenge: challenge)
+            let credential = URLCredential(trust: challenge.protectionSpace.serverTrust!)
+            challenge.sender?.use(credential , for: challenge)
         }
         
         // NSURLAuthenticationMethod - HTTPBasic
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic {
             if self.connectionData.user != nil && self.connectionData.password != nil {
-                let credential = NSURLCredential(user: connectionData.user!, password: connectionData.password!, persistence: NSURLCredentialPersistence.Synchronizable)
-                challenge.sender.useCredential(credential, forAuthenticationChallenge: challenge)
+                let credential = URLCredential(user: connectionData.user!, password: connectionData.password!, persistence: URLCredential.Persistence.synchronizable)
+                challenge.sender?.use(credential, for: challenge)
             }
         }
     }
@@ -47,16 +47,16 @@ public class URLConnectionDataDelegate: NSObject, NSURLConnectionDataDelegate {
     
     // MARK: - NSURLConnectionDataDelegate
     
-    public func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
+    public func connection(_ connection: NSURLConnection, didReceive response: URLResponse) {
         // put through data
-        self.connection?.delegate?.responseDidFinisch(data: self.data)
+        self.connection?.delegate?.responseDidFinish(data: self.data)
         
         // reset data
-        self.data.length = 0
+        self.data.count = 0
     }
     
-    public func connection(connection: NSURLConnection, didReceiveData data: NSData) {
-        self.data.appendData(data)
+    public func connection(_ connection: NSURLConnection, didReceive data: Data) {
+        self.data.append(data)
     }
     
 }
